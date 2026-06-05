@@ -7,9 +7,85 @@ const customColor2 = document.getElementById("customColor2");
 const factorRange = document.getElementById("factorRange");
 const layerCountDisplay = document.getElementById("layerCountDisplay");
 const doodleContainer = document.getElementById("doodleContainer");
+let isMobileInput = false;
+
+const isMobileDevice = () =>
+  /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent) ||
+  window.matchMedia("(pointer: coarse)").matches;
+
+const updateMobileState = () => {
+  isMobileInput = isMobileDevice();
+  document.body.classList.toggle("is-mobile", isMobileInput);
+};
+
+const handleDeviceOrientation = (event) => {
+  if (!isMobileInput) return;
+
+  const gamma = event.gamma ?? 0;
+  const beta = event.beta ?? 0;
+
+  const xValue = Math.max(-30, Math.min(30, gamma));
+  const yValue = Math.max(-20, Math.min(40, beta));
+
+  const x = (xValue + 30) / 60;
+  const y = (yValue + 20) / 60;
+
+  document.body.style.setProperty("--mouse-x", x);
+  document.body.style.setProperty("--mouse-y", y);
+};
+
+const handleTouchMove = (event) => {
+  if (!isMobileInput) return;
+  const touch = event.touches[0];
+  if (!touch) return;
+
+  const x = touch.clientX / window.innerWidth;
+  const y = touch.clientY / window.innerHeight;
+
+  document.body.style.setProperty("--mouse-x", x);
+  document.body.style.setProperty("--mouse-y", y);
+};
+
+const initializeMotionInput = () => {
+  updateMobileState();
+  window.addEventListener("resize", updateMobileState);
+  window.addEventListener("orientationchange", updateMobileState);
+
+  if (window.DeviceOrientationEvent) {
+    if (typeof window.DeviceOrientationEvent.requestPermission === "function") {
+      const requestPermission = async () => {
+        try {
+          const response = await DeviceOrientationEvent.requestPermission();
+          if (response === "granted") {
+            window.addEventListener(
+              "deviceorientation",
+              handleDeviceOrientation,
+              true,
+            );
+          }
+        } catch (error) {
+          // permission denied or unsupported
+        }
+      };
+      window.addEventListener("touchstart", requestPermission, {
+        once: true,
+      });
+    } else {
+      window.addEventListener(
+        "deviceorientation",
+        handleDeviceOrientation,
+        true,
+      );
+    }
+  }
+
+  window.addEventListener("touchmove", handleTouchMove, { passive: true });
+};
 
 // Nouveaux éléments pour l'effet personnalisé
-const customEffectPickerZone = document.getElementById("customEffectPickerZone");
+const customEffectPickerZone = document.getElementById(
+  "customEffectPickerZone",
+);
 const customDistance = document.getElementById("customDistance");
 const customFluidity = document.getElementById("customFluidity");
 const customElasticity = document.getElementById("customElasticity");
@@ -139,7 +215,8 @@ const translations = {
     modalOsTitle: "Open-Source Code",
     modalOsBody: `<p>This project is open-source and available on GitHub with a <a href="https://opensource.org/license/mit" target="_blank">MIT license</a>.</p><p>Feel free to clone, fork, or contribute to the repository. You can use it to build gorgeous typography layouts, study multi-layered CSS parallax mechanics, or experiment with kinetic visual effects controlled entirely via custom properties.</p>`,
     modalPyroTitle: "About Pyro",
-    modalPyroBody: "Passionate creator and developer of modern interactive interfaces and immersive visual effects.",
+    modalPyroBody:
+      "Passionate creator and developer of modern interactive interfaces and immersive visual effects.",
     closeBtn: "Close",
     repoBtn: "Repository",
     profileBtn: "GitHub Profile",
@@ -155,7 +232,7 @@ const translations = {
       "Inverted (Mirror)",
       "Chaos (Disordered)",
       "Elastic Wave",
-      "⚙️ Custom..."
+      "⚙️ Custom...",
     ],
     palettes: [
       "Sunset Glow (Original)",
@@ -166,8 +243,8 @@ const translations = {
       "Deep Ocean 🌊",
       "Volcano 🔥",
       "Vintage Pastel 🌸",
-      "🎨 Custom..."
-    ]
+      "🎨 Custom...",
+    ],
   },
   fr: {
     flagUrl: "https://flagcdn.com/w40/fr.png",
@@ -180,7 +257,8 @@ const translations = {
     modalOsTitle: "Code Open-Source",
     modalOsBody: `<p>Ce projet est open-source et disponible sur GitHub sous <a href="https://opensource.org/license/mit" target="_blank">licence MIT</a>.</p><p>N'hésitez pas à cloner, forker ou contribuer au dépôt. Vous pouvez l'utiliser pour créer de superbes mises en page typographiques, étudier la mécanique des parallaxes CSS multicouches ou expérimenter des effets visuels cinétiques entièrement contrôlés par des propriétés personnalisées.</p>`,
     modalPyroTitle: "À propos de Pyro",
-    modalPyroBody: "Créateur et développeur passionné d'interfaces interactives modernes et d'effets visuels immersifs.",
+    modalPyroBody:
+      "Créateur et développeur passionné d'interfaces interactives modernes et d'effets visuels immersifs.",
     closeBtn: "Fermer",
     repoBtn: "Dépôt GitHub",
     profileBtn: "Profil GitHub",
@@ -196,7 +274,7 @@ const translations = {
       "Inversé (Miroir)",
       "Chaos (Désordonné)",
       "Onde Élastique",
-      "⚙️ Personnalisé..."
+      "⚙️ Personnalisé...",
     ],
     palettes: [
       "Lueur du soir (Original)",
@@ -207,29 +285,34 @@ const translations = {
       "Océan Profond 🌊",
       "Volcan 🔥",
       "Vintage Pastel 🌸",
-      "🎨 Personnalisé..."
-    ]
-  }
+      "🎨 Personnalisé...",
+    ],
+  },
 };
 
 const updateLanguage = (lang) => {
   const t = translations[lang];
-  
+
   langFlag.innerHTML = `<img src="${t.flagUrl}" alt="${t.flagAlt}" class="flag-img">`;
-  
+
   showMenuBtn.innerHTML = `<span>⚙️</span> ${t.settings}`;
   document.querySelector(".controls-title").textContent = t.settings;
 
   document.querySelector('label[for="textInput"]').textContent = t.textLabel;
-  document.querySelector('label[for="modeSelect"]').textContent = t.parallaxLabel;
+  document.querySelector('label[for="modeSelect"]').textContent =
+    t.parallaxLabel;
   document.querySelector('label[for="colorSelect"]').textContent = t.colorLabel;
   customColorPickerZone.querySelector("label").textContent = t.customColorLabel;
-  
+
   // Tranduction des nouveaux labels de l'effet personnalisé
-  document.querySelector('label[for="customDistance"]').textContent = t.customDistLabel;
-  document.querySelector('label[for="customFluidity"]').textContent = t.customFluidLabel;
-  document.querySelector('label[for="customElasticity"]').textContent = t.customElasticLabel;
-  document.querySelector('label[for="customTime"]').textContent = t.customTimeLabel;
+  document.querySelector('label[for="customDistance"]').textContent =
+    t.customDistLabel;
+  document.querySelector('label[for="customFluidity"]').textContent =
+    t.customFluidLabel;
+  document.querySelector('label[for="customElasticity"]').textContent =
+    t.customElasticLabel;
+  document.querySelector('label[for="customTime"]').textContent =
+    t.customTimeLabel;
 
   const modeOptions = modeSelect.options;
   for (let idx = 0; idx < modeOptions.length; idx++) {
@@ -242,7 +325,8 @@ const updateLanguage = (lang) => {
   }
 
   const numLayers = factorRange.value;
-  document.querySelector('label[for="factorRange"]').innerHTML = `${t.layersLabel}<span id="layerCountDisplay">${numLayers}</span>`;
+  document.querySelector('label[for="factorRange"]').innerHTML =
+    `${t.layersLabel}<span id="layerCountDisplay">${numLayers}</span>`;
 
   modalOS.querySelector(".modal-title").textContent = t.modalOsTitle;
   modalOS.querySelector(".modal-body").innerHTML = t.modalOsBody;
@@ -252,7 +336,7 @@ const updateLanguage = (lang) => {
   closeOS.textContent = t.closeBtn;
   closePyro.textContent = t.closeBtn;
   openSourceBtn.textContent = t.modalOsTitle;
-  if(repoBtn) repoBtn.textContent = t.repoBtn;
+  if (repoBtn) repoBtn.textContent = t.repoBtn;
 
   const profileLink = modalPyro.querySelector(".modal-link-btn");
   if (profileLink) profileLink.textContent = t.profileBtn;
@@ -263,16 +347,19 @@ langBtn.addEventListener("click", () => {
   document.body.classList.add("lang-changing");
 
   const layers = Array.from(document.querySelectorAll(".text-layer"));
-  
+
   layers.forEach((layer, index) => {
-    const waveDelay = index * 45; 
+    const waveDelay = index * 45;
 
     setTimeout(() => {
       layer.style.setProperty("--wave-y", "-80px");
       layer.style.setProperty("--wave-scale", "1.12");
-      layer.style.setProperty("--wave-rot", `${(index % 2 === 0 ? 1 : -1) * 4}deg`);
+      layer.style.setProperty(
+        "--wave-rot",
+        `${(index % 2 === 0 ? 1 : -1) * 4}deg`,
+      );
       layer.style.setProperty("--wave-opacity", "0.1");
-      
+
       setTimeout(() => {
         if (index === 0) {
           currentLang = currentLang === "en" ? "fr" : "en";
@@ -280,20 +367,18 @@ langBtn.addEventListener("click", () => {
         } else {
           layer.textContent = textInput.value || " ";
         }
-        
+
         layer.style.setProperty("--wave-y", "15px");
         layer.style.setProperty("--wave-scale", "0.96");
         layer.style.setProperty("--wave-rot", "0deg");
         layer.style.setProperty("--wave-opacity", "0.7");
-        
+
         setTimeout(() => {
           layer.style.setProperty("--wave-y", "0px");
           layer.style.setProperty("--wave-scale", "1");
           layer.style.setProperty("--wave-opacity", "1");
         }, 250);
-
       }, 180);
-
     }, waveDelay);
   });
 
@@ -356,7 +441,7 @@ const interpolateColor = (color1, color2, factor) => {
 
 const renderLayers = () => {
   const numLayers = parseInt(factorRange.value, 10);
-  
+
   const display = document.getElementById("layerCountDisplay");
   if (display) display.textContent = numLayers;
 
@@ -369,7 +454,7 @@ const renderLayers = () => {
   }
 
   const fontSize = getDynamicFontSize(currentText.length);
-  
+
   // Afficher/Cacher la zone de couleur personnalisée
   const isCustomColor = colorSelect.value === "custom";
   customColorPickerZone.style.display = isCustomColor ? "flex" : "none";
@@ -415,16 +500,16 @@ const renderLayers = () => {
 
 const updateFactors = (mode) => {
   const layers = document.querySelectorAll(".text-layer");
-  
+
   // Affichage dynamique du sous-menu personnalisé
   const isCustomEffect = mode === "customEffect";
   customEffectPickerZone.style.display = isCustomEffect ? "flex" : "none";
 
   // Récupération des valeurs des sliders pour le mode personnalisé
-  const dVal = parseFloat(customDistance.value) / 15;   // Éloignement
-  const fVal = parseFloat(customFluidity.value) / 15;  // Fluidité
+  const dVal = parseFloat(customDistance.value) / 15; // Éloignement
+  const fVal = parseFloat(customFluidity.value) / 15; // Fluidité
   const eVal = parseFloat(customElasticity.value) / 10; // Élasticité
-  const tVal = parseFloat(customTime.value) / 10;       // Temps / déphasage
+  const tVal = parseFloat(customTime.value) / 10; // Temps / déphasage
 
   layers.forEach((layer, index) => {
     const i = index + 1;
@@ -453,7 +538,8 @@ const updateFactors = (mode) => {
         break;
       case "customEffect":
         // Combinaison cinétique des 4 sliders : Éloignement, Fluidité, Élasticité et Temps
-        factor = Math.log(i + 1) * dVal * fVal + Math.sin(i * eVal + tVal) * 0.5;
+        factor =
+          Math.log(i + 1) * dVal * fVal + Math.sin(i * eVal + tVal) * 0.5;
         invert = index % 2 === 0 ? -0.8 : 1.2;
         break;
     }
@@ -496,10 +582,13 @@ customColor2.addEventListener("input", renderLayers);
 factorRange.addEventListener("input", renderLayers);
 
 window.addEventListener("mousemove", (e) => {
+  if (isMobileInput) return;
+
   const x = e.clientX / window.innerWidth;
   const y = e.clientY / window.innerHeight;
   document.body.style.setProperty("--mouse-x", x);
   document.body.style.setProperty("--mouse-y", y);
 });
 
+initializeMotionInput();
 renderLayers();

@@ -11,31 +11,28 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
-    <link rel="icon" href="assets/logo.png">
+    <link rel="icon" href="assets/logo.png" />
   </head>
   <body>
     <button class="lang-toggle-btn" id="langBtn" title="Change language">
       <span id="langFlag">
-        <img src="https://flagcdn.com/w40/gb.png" alt="English" class="flag-img">
+        <img
+          src="https://flagcdn.com/w40/gb.png"
+          alt="English"
+          class="flag-img"
+        />
       </span>
     </button>
 
     <div class="controls-container">
-      <button
-        class="toggle-controls-btn"
-        id="showMenuBtn"
-      >
+      <button class="toggle-controls-btn" id="showMenuBtn">
         <span>⚙️</span> Settings
       </button>
 
       <div class="controls hidden" id="controlsPanel">
         <div class="controls-header">
           <span class="controls-title">Settings</span>
-          <button
-            class="minimize-btn"
-            id="hideMenuBtn"
-            title="Hide settings"
-          >
+          <button class="minimize-btn" id="hideMenuBtn" title="Hide settings">
             ✕
           </button>
         </div>
@@ -67,15 +64,33 @@
         <div class="custom-effect-picker" id="customEffectPickerZone">
           <div class="effect-field">
             <label for="customDistance">Distance</label>
-            <input type="range" id="customDistance" min="1" max="50" value="15" />
+            <input
+              type="range"
+              id="customDistance"
+              min="1"
+              max="50"
+              value="15"
+            />
           </div>
           <div class="effect-field">
             <label for="customFluidity">Fluidity (Speed)</label>
-            <input type="range" id="customFluidity" min="1" max="50" value="15" />
+            <input
+              type="range"
+              id="customFluidity"
+              min="1"
+              max="50"
+              value="15"
+            />
           </div>
           <div class="effect-field">
             <label for="customElasticity">Elasticity</label>
-            <input type="range" id="customElasticity" min="0" max="40" value="12" />
+            <input
+              type="range"
+              id="customElasticity"
+              min="0"
+              max="40"
+              value="12"
+            />
           </div>
           <div class="effect-field">
             <label for="customTime">Temporal Factor</label>
@@ -120,7 +135,11 @@
     <footer>
       <div class="footer-left">
         <button class="footer-btn" id="openSourceBtn">Open-Source</button>
-        <a href="https://github.com" target="_blank" class="footer-btn" id="repoBtn"
+        <a
+          href="https://github.com"
+          target="_blank"
+          class="footer-btn"
+          id="repoBtn"
           >Repository</a
         >
       </div>
@@ -140,9 +159,17 @@
       <div class="modal-box">
         <div class="modal-title">Open-Source Code</div>
         <div class="modal-body">
-          <p>This project is open-source and available on GitHub with a <a href="https://opensource.org/license/mit" target="_blank">MIT license</a>.</p>
           <p>
-            Feel free to clone, fork, or contribute to the repository. You can use it to build gorgeous typography layouts, study multi-layered CSS parallax mechanics, or experiment with kinetic visual effects controlled entirely via custom properties.
+            This project is open-source and available on GitHub with a
+            <a href="https://opensource.org/license/mit" target="_blank"
+              >MIT license</a
+            >.
+          </p>
+          <p>
+            Feel free to clone, fork, or contribute to the repository. You can
+            use it to build gorgeous typography layouts, study multi-layered CSS
+            parallax mechanics, or experiment with kinetic visual effects
+            controlled entirely via custom properties.
           </p>
         </div>
         <div class="modal-footer">
@@ -160,16 +187,17 @@
             alt="Pyro"
           />
         </center>
-        <div class="modal-title" style="text-align: center">
-          About Pyro
-        </div>
+        <div class="modal-title" style="text-align: center">About Pyro</div>
         <div class="modal-body" style="text-align: center">
-          Passionate creator and developer of modern interactive interfaces 
-          and immersive visual effects.
+          Passionate creator and developer of modern interactive interfaces and
+          immersive visual effects.
         </div>
         <div class="modal-footer" style="justify-content: center">
           <button class="modal-close-btn" id="closePyro">Close</button>
-          <a href="https://github.com/Pyronixus" target="_blank" class="modal-link-btn"
+          <a
+            href="https://github.com/Pyronixus"
+            target="_blank"
+            class="modal-link-btn"
             >GitHub Profile</a
           >
         </div>
