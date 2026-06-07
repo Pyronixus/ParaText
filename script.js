@@ -100,6 +100,7 @@ const modalOS = document.getElementById("modalOS");
 const modalPyro = document.getElementById("modalPyro");
 const openSourceBtn = document.getElementById("openSourceBtn");
 const repoBtn = document.getElementById("repoBtn");
+const repoModalBtn = document.getElementById("repoBtn-modalOS");
 const pyroBtn = document.getElementById("pyroBtn");
 const closeOS = document.getElementById("closeOS");
 const closePyro = document.getElementById("closePyro");
@@ -337,6 +338,7 @@ const updateLanguage = (lang) => {
   closePyro.textContent = t.closeBtn;
   openSourceBtn.textContent = t.modalOsTitle;
   if (repoBtn) repoBtn.textContent = t.repoBtn;
+  if (repoModalBtn) repoModalBtn.textContent = t.repoBtn;
 
   const profileLink = modalPyro.querySelector(".modal-link-btn");
   if (profileLink) profileLink.textContent = t.profileBtn;
